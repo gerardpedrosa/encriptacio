@@ -9,6 +9,8 @@ public class ClasseCriptografica {
 
             char lletra = Character.toUpperCase(missatge.charAt(i));
 
+            // "\u00C1" és equivalent a una lletra amb accent
+
             if (lletra == '\u00C1' || lletra == '\u00C0') {
                 lletra = 'A';
             }
@@ -72,7 +74,7 @@ public class ClasseCriptografica {
         int desplazament = Integer.parseInt(clau);
         String resultat = "";
 
-        String[] blocs = missatgeXifrat.split("\\s+");
+        String[] blocs = missatgeXifrat.split(" ");
 
         for (int i = 0; i < blocs.length; i++) {
 
