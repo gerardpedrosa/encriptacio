@@ -1,79 +1,36 @@
-import java.util.Scanner;
-
 public class ClasseCriptografica {
 
-    public static void main(String[] args) {
-        new ClasseCriptografica().principal();
-    }
+    public String Encripta(String missatge, String clau) {
 
-    public void principal() {
-
-        Scanner sc = new Scanner(System.in);
-
-        int opcio;
-
-        do {
-
-            System.out.println();
-            System.out.println("1. Encriptar");
-            System.out.println("2. Desencriptar");
-            System.out.println("3. Sortir");
-            System.out.print("Opció: ");
-
-            String entrada = sc.nextLine();
-
-            try {
-                opcio = Integer.parseInt(entrada);
-            } catch (NumberFormatException e) {
-                opcio = 0;
-            }
-
-            if (opcio == 1) {
-
-                System.out.print("Missatge: ");
-                String missatge = sc.nextLine();
-
-                System.out.println("Resultat: " + Encripta(missatge));
-
-            } else if (opcio == 2) {
-
-                System.out.print("Missatge encriptat: ");
-                String missatge = sc.nextLine();
-
-                System.out.println("Resultat: " + Desencripta(missatge));
-
-            } else if (opcio == 3) {
-
-                System.out.println("Sortint...");
-
-            } else {
-
-                System.out.println("Opció incorrecta.");
-            }
-
-        } while (opcio != 3);
-
-        sc.close();
-    }
-
-    public String Encripta(String missatge) {
-
+        int desplazament = Integer.parseInt(clau);
         String resultat = "";
 
         for (int i = 0; i < missatge.length(); i++) {
 
             char lletra = Character.toUpperCase(missatge.charAt(i));
 
-            if (lletra == 'Á' || lletra == 'À') {
+            if (lletra == '\u00C1' || lletra == '\u00C0') {
                 lletra = 'A';
-            } else if (lletra == 'É' || lletra == 'È') {
+            }
+
+            if (lletra == '\u00C9' || lletra == '\u00C8') {
                 lletra = 'E';
-            } else if (lletra == 'Í' || lletra == 'Ì') {
+            }
+
+            if (lletra == '\u00CD' || lletra == '\u00CC') {
                 lletra = 'I';
-            } else if (lletra == 'Ó' || lletra == 'Ò') {
+            }
+
+            if (lletra == '\u00D3' || lletra == '\u00D2') {
                 lletra = 'O';
-            } else if (lletra == 'Ú' || lletra == 'Ù') {
+            }
+
+            if (lletra == '\u00DA' || lletra == '\u00D9') {
                 lletra = 'U';
+            }
+
+            if (lletra == '\uFFFD') {
+                lletra = 'O';
             }
 
             if (lletra == ' ') {
@@ -87,26 +44,17 @@ public class ClasseCriptografica {
 
             int n = lletra - 'A' + 1;
 
-            int n1 = n - 5;
-
-            if (n1 < 1) {
-                n1 += 26;
-            }
-
-            int n2 = n + 5;
-
-            if (n2 > 26) {
-                n2 -= 26;
-            }
+            int n1 = (n - desplazament - 1 + 26) % 26 + 1;
+            int n2 = (n + desplazament - 1) % 26 + 1;
 
             String binari1 = Integer.toBinaryString(n1);
             String binari2 = Integer.toBinaryString(n2);
 
-            while (binari1.length() < 5) {
+            for (int j = binari1.length(); j < 5; j++) {
                 binari1 = "0" + binari1;
             }
 
-            while (binari2.length() < 5) {
+            for (int j = binari2.length(); j < 5; j++) {
                 binari2 = "0" + binari2;
             }
 
@@ -116,16 +64,19 @@ public class ClasseCriptografica {
             resultat += binari1 + binari2 + " ";
         }
 
-        return resultat.trim();
+        return resultat;
     }
 
-    public String Desencripta(String missatge) {
+    public String Desencripta(String missatgeXifrat, String clau) {
 
+        int desplazament = Integer.parseInt(clau);
         String resultat = "";
 
-        String[] blocs = missatge.trim().split("\\s+");
+        String[] blocs = missatgeXifrat.split("\\s+");
 
-        for (String bloc : blocs) {
+        for (int i = 0; i < blocs.length; i++) {
+
+            String bloc = blocs[i];
 
             if (bloc.equals("/")) {
                 resultat += " ";
@@ -142,11 +93,7 @@ public class ClasseCriptografica {
 
             int n1 = Integer.parseInt(binari1, 2);
 
-            int n = n1 + 5;
-
-            if (n > 26) {
-                n -= 26;
-            }
+            int n = (n1 + desplazament - 1) % 26 + 1;
 
             char lletra = (char) ('A' + n - 1);
 
